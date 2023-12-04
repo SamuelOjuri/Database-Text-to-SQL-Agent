@@ -1,4 +1,4 @@
-# Agent-Database-Analyst
+# Database-Text-to-SQL-Agent
 Database Analyst with OpenAI Assistant API
 
 ## KaggleX-Final-Project: Deriving Business Insights from Relational Database Management Systems with Natural Language
