@@ -50,6 +50,6 @@ if st.button("Chat with Assistant"):
         # Display the image from the byte stream
         st.image(response_content, use_column_width=True)
     else:
-        # Display text output
+        # Display text output.
         st.text(response_content)
  

@@ -25,7 +25,7 @@ def get_db_connection():
     except mysql.connector.Error:
         return False, "Could not establish a database connection"
 
-# Print table names from database
+# Print table names from database.
 def show_tables(cursor):
     table_list = []
     try:

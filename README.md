@@ -109,17 +109,19 @@ print(path)
 
 ## Code Structure
 
-- **utils.py**: Contains utility functions such as:
+- **backend/assistant.py**: This is the core module of the application. It defines several classes including AIAssistant, Conversation, and Message. The AIAssistant class encapsulates the logic for creating threads, processing natural language inputs, executing functions, and handling file operations. It also manages the conversation flow and integrates tools for retrieval and code interpretation.
 
-    - `get_db_connection()`: Establishes a MySQL database connection.
-    - `show_tables(cursor)`: Prints table names from the database.
-    - `create_engine_connection()`: Creates a SQLAlchemy engine.
+- **backend/function.py**: Defines the base class Function and FunctionCall model. This module is crucial for extending the capabilities of the AI Assistant by allowing custom functions to be defined and executed as part of the conversation flow. It uses polymorphism and abstract classes to create a flexible architecture for adding new functions.
 
-- **main.py**: Entry point of the application. Initializes Streamlit UI and manages the execution of the OpenAI Assistant (Agent).
+- **backend/sql_assistant.py**: Contains specific implementations of the Function class for interacting with the database. It includes classes like GetDBSchema and RunSQLQuery, which are responsible for fetching the database schema and running SQL queries, respectively.
 
-- **.env**: Stores environment variables required for the application.
+- **backend/utils.py**: This utility module provides functions for database connectivity and operations. It includes methods like get_db_connection, show_tables, and create_engine_connection, which are essential for establishing and interacting with the MySQL database.
 
-- **requirements.txt**: List of Python packages required for the application.
+- **main.py**: Serves as the entry point of the application. It uses Streamlit to create a web-based user interface where users can interact with the AI Assistant. This module handles the initialization of the assistant and processes user inputs to generate responses.
+
+- **.env**: A configuration file storing environment variables such as database credentials and the OpenAI API key. This file is crucial for maintaining the security and configurability of the application.
+
+- **requirements.txt**: Lists all the Python packages required for running the application. This file is essential for setting up a consistent development and deployment environment.
 
 ---
 
