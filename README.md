@@ -67,7 +67,25 @@ DB_NAME=classicmodels
     cd your_repository
     ```
 
-3. Install required packages:
+3. Create a Python virtual environment: 
+
+`python3 -m venv venv`
+
+Activate your environment (change 'bin' to 'Scripts' or 'Source' directory depending on which OS you are using): 
+
+`. venv/bin/activate`
+
+Add the base directory path (current working directory) to a `basepath.pth` file in `Database-Text-to-SQL-Agent/venv/lib/python3.10/site-packages/`
+
+```
+import os
+
+path = os.getcwd()
+
+print(path)
+```
+
+4. Install required packages:
 
     ```
     pip install -r requirements.txt
@@ -79,15 +97,13 @@ DB_NAME=classicmodels
 
 1. Open your terminal and run the following command:
 
-    ```
-    python main.py
-    ```
+    - streamlit run main.py   
 
-    This will launch a Gradio interface.
+    This will launch a Streamlit interface.
 
-2. Access the Gradio interface by visiting the URL provided in the terminal.
+2. Access the Streamlit interface by visiting the URL provided in the terminal.
 
-3. Use the example buttons or type your question into the textbox and click "Submit" to get your insights.
+3. Type your question into the textbox and click "Chat with Assistant" button to get your insights.
 
 ---
 
@@ -98,15 +114,12 @@ DB_NAME=classicmodels
     - `get_db_connection()`: Establishes a MySQL database connection.
     - `show_tables(cursor)`: Prints table names from the database.
     - `create_engine_connection()`: Creates a SQLAlchemy engine.
-    - `setup_agent_executor(engine)`: Sets up Langchain Agent Executor.
 
-- **main.py**: Entry point of the application. Initializes Gradio UI and manages the execution of the Langchain Agent.
+- **frontend.py**: Entry point of the application. Initializes Streamlit UI and manages the execution of the OpenAI Assistant (Agent).
 
 - **.env**: Stores environment variables required for the application.
 
 - **requirements.txt**: List of Python packages required for the application.
-
-- "https://github.com/Dataherald/Assistant/blob/main/README.md"
 
 ---
 

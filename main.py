@@ -1,55 +1,55 @@
-import gradio as gr
-from utils import setup_agent_executor, create_engine_connection, get_db_connection, show_tables
+from dotenv import load_dotenv
+import streamlit as st
 import os
+from io import BytesIO
+from backend.assistant import AIAssistant
+from backend.sql_assistant import GetDBSchema, RunSQLQuery
 
-# Retrieve the API key
-openai_api_key = os.getenv("OPENAI_API_KEY")
 
-# Create a reusable database connection
-success, connection_or_msg = get_db_connection()
-if not success:
-    print("Application terminated: ", connection_or_msg)
-    exit()
+load_dotenv()
 
-engine = create_engine_connection()
 
-# Create a reusable Langchain Agent Executor
-agent_executor = setup_agent_executor(engine)
 
-def run_agent(query):
-    response = agent_executor.run(query)
-    return response
+st.markdown("<h2 style='text-align: left; color: black;'>🔍 Database Query Assistant</h2>", unsafe_allow_html=True)
+st.write("Interact with the Database Query Assistant using natural language queries.")
+st.write("The Assistant can provide information about the database schema and execute SQL queries.")
+st.write(
+    "- Enter your questions about the MySQL classicmodels database and click the 'Chat with Assistant' button to get answers."
+)
+st.write("- You can type in 'bye' or 'exit' to quit when you are done.")
 
-def populate_query(example_value, _):
-    return example_value
+# Display example input questions
+st.write("Example questions about classicmodels database:")
+st.markdown("""
+- List the top 10 customers by total payments.
+- Create a data visualisation for the number of orders by product line.
+- List the top 10 products by payments.
+- Create a word cloud for the sales employees by performance.
+- What is the total quantity of products sold for each product line.
+- Create a line graph for the sum of quantity ordered by month for the year 2003.
+""")
 
-# Define the Gradio interface
-blocks = gr.Blocks()
+user_input = st.text_input("Enter your question:")
 
-with blocks:
-    gr.Markdown("""<h1><center>Derive Business Insights from Database</center></h1>""")
-    with gr.Row():
-        with gr.Column():
-            gr.Markdown("""<h2 style="text-align:left;">Sample Questions:</h2>""")
-            with gr.Row():
-                example1 = gr.Button(value="List the top 10 highest paying customers and the total payments for each customer")
-                example2 = gr.Button(value="List the top 10 most frequent customers")
-            with gr.Row():
-                example3 = gr.Button(value="List the number of orders by productline")
-                example4 = gr.Button(value="List the sum of quantity ordered by year")
-            query = gr.Textbox(lines=5, label="Enter question")
-            with gr.Row():
-                gr.ClearButton(query)
-                input_btn = gr.Button(value="Submit")
-        with gr.Column():
-            gr.Markdown("""<h2 style="text-align:left;">Derived Response:</h2>""")
-            agent_output = gr.Textbox(label="Output", lines=15)
+if st.button("Chat with Assistant"):
+    assistant = AIAssistant(
+        instruction="""
+        You are a SQL expert. User asks you questions about the MySQL classicmodels database.
+        First obtain the schema of the database to check the tables and columns, then generate SQL queries to answer the questions.
+        """,
+        #model="gpt-3.5-turbo-1106",
+        model="gpt-4-1106-preview",
+        functions=[GetDBSchema(), RunSQLQuery()],
+        use_code_interpreter=True,
+    )
 
-    example1.click(populate_query, inputs=[example1, query], outputs=[query])
-    example2.click(populate_query, inputs=[example2, query], outputs=[query])
-    example3.click(populate_query, inputs=[example3, query], outputs=[query])
-    example4.click(populate_query, inputs=[example4, query], outputs=[query])
+    response_content = assistant.streamlit_chat(user_input)
 
-    input_btn.click(run_agent, inputs=[query], outputs=[agent_output], api_name="derive-insights")
-
-blocks.launch(share=True, server_port=5004)
+    # Check if the response content is a byte stream indicating an image
+    if isinstance(response_content, BytesIO):
+        # Display the image from the byte stream
+        st.image(response_content, use_column_width=True)
+    else:
+        # Display text output
+        st.text(response_content)
+ 

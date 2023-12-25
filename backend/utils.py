@@ -1,11 +1,5 @@
 from dotenv import load_dotenv
 import mysql.connector
-from langchain.agents import create_sql_agent
-from langchain.agents.agent_toolkits import SQLDatabaseToolkit
-from langchain.sql_database import SQLDatabase
-from langchain.agents.agent_toolkits.sql.base import AgentType
-from langchain.chat_models import ChatOpenAI
-from langchain.output_parsers import CommaSeparatedListOutputParser
 from sqlalchemy import create_engine
 from urllib.parse import quote_plus
 
@@ -52,23 +46,3 @@ def create_engine_connection():
     connection_string = f'mysql+mysqlconnector://{DB_USER}:{DB_PASS_QUOTED}@{DB_HOST}/{DB_NAME}'
     engine = create_engine(connection_string)
     return engine
-
-# Setup Langchain Agent Executor
-def setup_agent_executor(engine):
-    db = SQLDatabase(engine=engine)
-    llm = ChatOpenAI(model_name="gpt-4", temperature=0)
-    toolkit = SQLDatabaseToolkit(db=db, llm=llm)
-
-    agent_executor = create_sql_agent(
-        llm=llm,
-        toolkit=toolkit,
-        handle_parsing_errors=True,
-        agent_type=AgentType.OPENAI_FUNCTIONS,
-        output_parser=CommaSeparatedListOutputParser(),
-        verbose=True
-    )
-    return agent_executor
-
-
-
-#

@@ -1,12 +1,16 @@
+import os
 from openai import OpenAI
 from openai import Client
-from function import Function, FunctionCall
+from backend.function import Function, FunctionCall
 from openai.types.beta import Thread, Assistant
 from openai.types.beta.threads import Run, ThreadMessage
+from openai.types.beta.threads import MessageContentImageFile
 from yaspin import yaspin
 import json
 import random
 import time
+from io import BytesIO
+
 
 
 PRINT_COLORS = [
@@ -60,6 +64,7 @@ class AIAssistant:
     conversation: Conversation
     verbose: bool
     auto_delete: bool = True
+    
 
     def __init__(
         self,
@@ -203,7 +208,22 @@ class AIAssistant:
             message_content = message.content[0].text
         else:
             message_content = message.content[0]
-        annotations = message_content.annotations
+
+        if isinstance(message_content, MessageContentImageFile):
+        # Access the image file object and retrieve the file ID
+            image_file_object = message_content.image_file
+            if hasattr(image_file_object, 'file_id'):
+                api_response = self.client.files.with_raw_response.retrieve_content(image_file_object.file_id)
+                if api_response.status_code == 200:
+                    return BytesIO(api_response.content)              
+                else:
+                    return "Error downloading image file."
+            else:
+                return "Image file ID not found in the message content."
+
+        # Use getattr to safely access the annotations attribute
+        annotations = getattr(message_content, 'annotations', [])
+        #annotations = message_content.annotations
         citations = []
         for index, annotation in enumerate(annotations):
             message_content.value = message_content.value.replace(
@@ -230,7 +250,14 @@ class AIAssistant:
         ).data
         for message in messages:
             if message.run_id == run.id:
-                return f"{message.role}: " + self.format_message(message=message)
+                formatted_message = self.format_message(message=message)
+                # Check if formatted_message is a BytesIO object
+                if isinstance(formatted_message, BytesIO):
+                    # Return it directly without concatenation
+                    return formatted_message
+                else:
+                    # Concatenate and return as string
+                    return f"{message.role}: {formatted_message}"
         return "Assistant: No message found"
 
     def create_response(
@@ -273,7 +300,17 @@ class AIAssistant:
                     random_color = random.choice(PRINT_COLORS)
                     print(f"\n{random_color}Run status: {run.status}")
                 time.sleep(0.5)
-        return "\n" + self.extract_run_message(run=run, thread_id=thread_id)
+        message_content = self.extract_run_message(run=run, thread_id=thread_id)
+
+        # Check if the message content is a byte stream indicating an image)
+        if isinstance(message_content, BytesIO):
+            # Return the byte stream directly instead of a file path
+            return message_content
+        else:
+            # Return a string if it's not an image
+            return message_content
+
+        
     
     def chat(self, file_ids: list[str] = None):
         thread = self.create_thread()
@@ -290,3 +327,25 @@ class AIAssistant:
                     self.delete_file(file_id=file)
             self.client.beta.threads.delete(thread_id=thread.id)
             self.client.beta.assistants.delete(assistant_id=self.assistant.id)
+
+
+    def streamlit_chat(self, user_input: str, file_ids: list[str] = None) -> str:
+        thread = self.create_thread()
+        if user_input.lower() in ["bye", "exit"]:
+            response = "Goodbye! If you have more questions in the future, feel free to ask."
+        else:
+            response = self.create_response(
+                thread_id=thread.id, content=user_input, message_files=file_ids
+            )
+        if self.auto_delete:
+            if file_ids:
+                for file in file_ids:
+                    self.delete_file(file_id=file)
+            self.client.beta.threads.delete(thread_id=thread.id)
+            self.client.beta.assistants.delete(assistant_id=self.assistant.id)
+            
+        return response
+    
+
+
+
