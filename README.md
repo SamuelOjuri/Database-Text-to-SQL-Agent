@@ -1,7 +1,7 @@
 # Database-Text-to-SQL-Agent
 Database Analyst with OpenAI Assistant API
 
-## KaggleX-Final-Project: Deriving Business Insights from Relational Database Management Systems with Natural Language
+## Deriving Business Insights from Relational Database Management Systems with Natural Language
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -16,7 +16,7 @@ Database Analyst with OpenAI Assistant API
 
 As recent advancements make it easier to leverage the use of Large Language Models in business solutions, the potential for widespread adoption of this approach is increasingly promising. Most organizations across several industries store their data about business processes and transactions in Relational Database Management Systems. Retrieving business-critical insights from these data stores has the limitation of technical expertise in Structured Query Language (SQL). The project aims to provide a solution that enables non-technical stakeholders to easily query databases using natural language and retrieve insights about the business's key performance indicators and opportunities in real-time. It aims to allow appropriate non-technical stakeholders to use natural language for retrieving desired information from their RDBMS and also access advanced data analytics reports and dashboards derived from their queries using an intelligent agent and a competent large language model within an integrated framework. 
 
-This application provides an intuitive interface for users to derive business insights directly from their databases by using natural language queries. Leveraging Langchain framework and OpenAI's GPT-4 model, the application executes SQL queries behind the scenes to generate informative responses.
+This application provides an intuitive interface for users to derive business insights directly from their databases by using natural language queries. Leveraging OpenAI Assistant's API as an intelligent agent and the OpenAI's GPT-4 model as a reasoning engine, the application executes SQL queries behind the scenes to generate informative responses.
 
 ### Notebook
 [Google Colab Notebook] (https://colab.research.google.com/drive/1x0s4xxrwGjzSC3Fz2uhMwsp-TNvD5L1Q?usp=sharing)
@@ -115,7 +115,7 @@ print(path)
     - `show_tables(cursor)`: Prints table names from the database.
     - `create_engine_connection()`: Creates a SQLAlchemy engine.
 
-- **frontend.py**: Entry point of the application. Initializes Streamlit UI and manages the execution of the OpenAI Assistant (Agent).
+- **main.py**: Entry point of the application. Initializes Streamlit UI and manages the execution of the OpenAI Assistant (Agent).
 
 - **.env**: Stores environment variables required for the application.
 
