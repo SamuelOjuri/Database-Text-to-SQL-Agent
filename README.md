@@ -18,9 +18,6 @@ As recent advancements make it easier to leverage the use of Large Language Mode
 
 This application provides an intuitive interface for users to derive business insights directly from their databases by using natural language queries. Leveraging OpenAI Assistant's API as an intelligent agent and the OpenAI's GPT-4 model as a reasoning engine, the application executes SQL queries behind the scenes to generate informative responses.
 
-### Notebook
-[Google Colab Notebook] (https://colab.research.google.com/drive/1x0s4xxrwGjzSC3Fz2uhMwsp-TNvD5L1Q?usp=sharing)
-
 ### Architecture
 ![image](https://github.com/SamuelOjuri/Business_Insights_from_RDBMS_with_Natural_Language/blob/main/SQL_database_agent_workflow.png)
 
@@ -119,10 +116,12 @@ print(path)
 
 - **main.py**: Serves as the entry point of the application. It uses Streamlit to create a web-based user interface where users can interact with the AI Assistant. This module handles the initialization of the assistant and processes user inputs to generate responses.
 
-- **.env**: A configuration file storing environment variables such as database credentials and the OpenAI API key. This file is crucial for maintaining the security and configurability of the application.
+- **.env**: A configuration file storing environment variables such as database credentials and the OpenAI API key. This file is crucial for maintaining the security and configuration of the application.
 
 - **requirements.txt**: Lists all the Python packages required for running the application. This file is essential for setting up a consistent development and deployment environment.
 
 ---
 
+### Finetune-vs-Few-shot Experiment Notebook
+[Google Colab Notebook] (https://colab.research.google.com/drive/18-HQgKGtBSj8wpQqFskdlkj2TpN8euG0?usp=sharing)
 

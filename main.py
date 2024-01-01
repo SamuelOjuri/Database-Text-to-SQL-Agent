@@ -2,21 +2,19 @@ from dotenv import load_dotenv
 import streamlit as st
 import os
 from io import BytesIO
-from backend.assistant import AIAssistant
+from backend.assistant import DatabaseAssistant
 from backend.sql_assistant import GetDBSchema, RunSQLQuery
 
 
 load_dotenv()
 
 
-
-st.markdown("<h2 style='text-align: left; color: black;'>🔍 Database Query Assistant</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: left;'>🔍 Database Query Assistant</h2>", unsafe_allow_html=True)
 st.write("Interact with the Database Query Assistant using natural language queries.")
 st.write("The Assistant can provide information about the database schema and execute SQL queries.")
 st.write(
     "- Enter your questions about the MySQL classicmodels database and click the 'Chat with Assistant' button to get answers."
 )
-st.write("- You can type in 'bye' or 'exit' to quit when you are done.")
 
 # Display example input questions
 st.write("Example questions about classicmodels database:")
@@ -32,7 +30,7 @@ st.markdown("""
 user_input = st.text_input("Enter your question:")
 
 if st.button("Chat with Assistant"):
-    assistant = AIAssistant(
+    assistant = DatabaseAssistant(
         instruction="""
         You are a SQL expert. User asks you questions about the MySQL classicmodels database.
         First obtain the schema of the database to check the tables and columns, then generate SQL queries to answer the questions.

@@ -48,7 +48,7 @@ class Conversation:
             print(f"{message.role}: {message.content}")
 
 
-class AIAssistant:
+class DatabaseAssistant:
     assistant: Assistant
     client: OpenAI
     assistant_name: str
@@ -74,8 +74,8 @@ class AIAssistant:
         use_code_interpreter: bool = False,
         file_ids: list[str] = None,
         functions: list[Function] = None,
-        assistant_name: str = "AI Assistant",
-        assistant_description: str = "An AI Assistant",
+        assistant_name: str = "Database Assistant",
+        assistant_description: str = "A Database Assistant",
         verbose: bool = False,
         auto_delete: bool = True,
     ):
